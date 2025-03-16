@@ -1,0 +1,65 @@
+state = {}
+meta_prompt = "You're an assistant that gets user responses for a survey."
+languages = ["Spanish", "English", "French", "German", "Italian", "Portuguese", "Japanese"]
+rank_questions = [
+    "My English has improved because of this English class at RIT.",
+    "Thanks to attending this program, I feel more confident using English in my daily life.",
+    "The English lessons are right for my level of reading, writing, speaking, and listening.",
+    "My teacher continues on a topic until I fully understand and then moves to the next lesson/topic.",
+    "RIT staff make me feel welcome.",
+    "In this program, I have learned about other cultures.",
+    "In this program, I made friends from other countries.",
+    "In this program, I have learned more about technology (phones, computers)."
+]
+fr_questions = [
+    "What can RIT do to help you?"
+]
+
+
+# Greet
+say("Hello, this is a survey for Refugee and Immigrant Transitions. Please choose a language: Spanish, English, French, German, Italian, Portuguese, or Japanese.")
+
+# Prompt for language choice
+loop:
+    lang_response = talk("Help the user pick a language from the following: Spanish, English, French, German, Italian, Portuguese, or Japanese.", False)
+until "User has chosen a language":
+    selected_language = lang_response.ask(question="Extract the user's preferred language from the response.", example={"language": "English"})
+    state['language'] = selected_language['language']  # Save language choice
+
+# Prompt for the user's name or anonymity
+loop:
+    name_response = talk("Please say your first and last name, or say 'Anonymous' if you prefer not to share.", True)
+until "User has said a name or Anonymous":
+    user_name = name_response.ask(question="Extract the user's first and last name or Anonymous.", example={"name": "John Doe"})
+    state['name'] = user_name['name']  # Save name or Anonymous
+
+# Loop to ask each question and capture feedback
+state['feedback'] = {}
+
+say("For the following questions, please rate from 1 to 5, where 1 is strongly disagree and 5 is strongly agree.")
+for question in rank_questions:
+    loop:
+        user_response = talk(f"{question}", True)
+    until "User has given a rating":
+        # Extract the user's rating
+        user_rank = user_response.ask(question="Extract the user's rank", example={"rank": "5"})
+        
+        # Save the user's response for this question
+        state['feedback'][question] = user_rank["rank"]
+
+# Free response question for additional feedback
+say("Please respond freely")
+for question in fr_questions:
+    loop:
+        free_response = talk(f"{question}", True)
+    until "User has given a response":
+        # Extract the user's answer
+        user_answer = free_response.ask(question="Extract the user's answer",  example={"answer": "Provide more English classes at night"} )
+        
+        state['feedback'][question] = user_answer["answer"]
+
+# After all questions, thank the user
+say("Thank you for your feedback! We value your responses and will use them to improve the program.")
+
+# Optionally, print or save the collected data (e.g., to a file or database)
+print(state) 
