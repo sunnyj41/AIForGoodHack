@@ -1,80 +1,80 @@
-# Shift Booker Survey System
+# Data Viewer Web Application
 
-This system collects survey responses using a Brainbase Labs conversational agent and provides tools to analyze the collected data.
+A simple single-page web application that allows users to upload files and view their contents in a table format.
 
-## Files
+## Features
 
-- `shift_booker.based`: The conversational agent definition that collects survey responses
-- `deploy_shift_booker.py`: Script to deploy the conversational agent
-- `process_survey_data.py`: Script to analyze the collected survey data
-- `.env`: Environment variables for API keys and credentials
-- `requirements.txt`: Python dependencies
+- Upload multiple files (supports CSV, TXT, JSON, and DOCX formats)
+- Display data in a clean, responsive table with three columns: Name, Phone Number, and Responses
+- Filenames in the Name column are clickable links that allow downloading the original file
+- Auto-generated phone numbers (first row always shows +18885645271)
+- Responses column contains links to a local Excel spreadsheet template
+- Modern UI with a clean design
 
-## Setup
+## How to Use
 
-1. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+1. Clone or download this repository
+2. Place your Excel template file named `responses_template.xlsx` in the same folder as the HTML file
+3. Open the `index.html` file in your web browser
+4. Click the "Upload Files" button in the top right corner
+5. Select one or more files to upload (CSV, TXT, JSON, or DOCX)
+6. The data will be displayed in the table:
+   - Name column: Filename with download link to the original file
+   - Phone Number column: Auto-generated phone numbers (first row is always +18885645271)
+   - Responses column: "View Responses" link that opens your local Excel template
+7. Click on any filename in the Name column to download the original file
+8. Click on "View Responses" to open the Excel template file
 
-2. Set up your environment variables in the `.env` file:
-   ```
-   BB_API_KEY=your_brainbase_labs_api_key
-   ```
+## Required Files
 
-## Usage
+- `index.html`: The main HTML file
+- `styles.css`: CSS styles for the application
+- `script.js`: JavaScript code for the application functionality
+- `responses_template.xlsx`: Your Excel template file with the following recommended columns:
+  - Date
+  - First Name
+  - Last Name
+  - Q1
+  - Q2
 
-### Deploy the Survey Agent
+## File Format Support
 
-To deploy the conversational agent:
+- **CSV files**: Should have headers in the first row
+- **TXT files**: Should be comma or tab-separated with headers in the first row
+- **JSON files**: Should contain objects with properties
+- **DOCX files**: The filename will be displayed in the Name column as a downloadable link
 
+Example CSV format:
 ```
-python deploy_shift_booker.py
-```
-
-This will deploy the agent to the phone number specified in the script.
-
-### Collect Survey Data
-
-When users interact with the deployed agent via phone, their responses will be collected and saved to JSON files in the `data` directory.
-
-### Process Survey Data
-
-To analyze the collected survey data:
-
-```
-python process_survey_data.py
-```
-
-This script will:
-1. Load the most recent survey response
-2. Load and analyze all survey responses
-3. Generate statistics on the responses
-4. Save the combined data to a CSV file
-
-## Data Storage
-
-Survey responses are saved as JSON files in the `data` directory with timestamps in the filename format:
-```
-data/survey_response_YYYYMMDD_HHMMSS.json
+Name,Phone Number,Responses
+John Doe,123-456-7890,Yes
+Jane Smith,987-654-3210,No
 ```
 
-Each file contains the complete state from a single survey interaction, including:
-- User's name (or "Anonymous")
-- Selected language
-- Responses to all survey questions
+Example JSON format:
+```json
+[
+  {
+    "name": "John Doe",
+    "phone": "123-456-7890",
+    "responses": "Yes"
+  },
+  {
+    "name": "Jane Smith",
+    "phone": "987-654-3210",
+    "responses": "No"
+  }
+]
+```
 
-## Analysis
+## Browser Compatibility
 
-The `process_survey_data.py` script provides several functions:
+This application works in all modern browsers including:
+- Chrome
+- Firefox
+- Safari
+- Edge
 
-- `load_latest_survey_data()`: Loads the most recent survey response
-- `load_all_survey_data()`: Loads all survey responses
-- `analyze_survey_data(data)`: Generates statistics on the responses
+## License
 
-The analysis includes:
-- Total number of responses
-- Language distribution
-- Average ratings for each question
-
-The combined data is also saved to a CSV file for further analysis in spreadsheet software. 
+This project is open source and available under the MIT License. 
